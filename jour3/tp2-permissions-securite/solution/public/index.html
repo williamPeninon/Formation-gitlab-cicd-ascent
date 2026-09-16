@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>taskflow-api — démo</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #0f172a; }
+  h1 { font-size: 1.4rem; }
+  ul { list-style: none; padding: 0; }
+  li { padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+  li.done { text-decoration: line-through; color: #64748b; background: #f8fafc; }
+  form { display: flex; gap: 8px; margin-bottom: 24px; }
+  input { flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
+  button { padding: 8px 14px; border: none; border-radius: 6px; background: #2563eb; color: white; cursor: pointer; }
+  small { color: #64748b; }
+</style>
+</head>
+<body>
+  <h1>taskflow-api</h1>
+  <p><small>Page de démonstration statique — consomme l'API REST du même serveur.</small></p>
+  <form id="new-task-form">
+    <input id="title" type="text" placeholder="Nouvelle tâche…" required />
+    <button type="submit">Ajouter</button>
+  </form>
+  <ul id="task-list"></ul>
+
+  <script>
+    async function loadTasks() {
+      const res = await fetch('/api/tasks');
+      const tasks = await res.json();
+      const list = document.getElementById('task-list');
+      list.innerHTML = '';
+      for (const task of tasks) {
+        const li = document.createElement('li');
+        if (task.done) li.classList.add('done');
+        const label = document.createElement('span');
+        label.textContent = task.title;
+        const toggle = document.createElement('button');
+        toggle.textContent = task.done ? 'Annuler' : 'Terminer';
+        toggle.addEventListener('click', async () => {
+          await fetch(`/api/tasks/${task.id}`, { method: 'PATCH' });
+          loadTasks();
+        });
+        li.appendChild(label);
+        li.appendChild(toggle);
+        list.appendChild(li);
+      }
+    }
+
+    document.getElementById('new-task-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('title');
+      await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: input.value }),
+      });
+      input.value = '';
+      loadTasks();
+    });
+
+    loadTasks();
+  </script>
+</body>
+</html>

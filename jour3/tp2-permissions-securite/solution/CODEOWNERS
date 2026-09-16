@@ -1,0 +1,17 @@
+# Fichier CODEOWNERS — corrigé du TP 3.2
+#
+# Format : <chemin> <@utilisateur-ou-@groupe ...>
+# GitLab exige l'approbation du/des propriétaire(s) désigné(s) avant de
+# permettre la fusion d'une Merge Request modifiant le chemin concerné
+# (une fois l'option "Require approval from Code Owners" activée dans
+# Settings > Merge requests).
+
+# Le pipeline CI/CD est un actif sensible : toute modification doit être
+# revue par la personne responsable de la plateforme.
+.gitlab-ci.yml @responsable-plateforme
+
+# Les scripts de déploiement engagent directement la production.
+/scripts/ @responsable-plateforme
+
+# Le Dockerfile définit l'image exécutée en production : même exigence.
+/Dockerfile @responsable-plateforme

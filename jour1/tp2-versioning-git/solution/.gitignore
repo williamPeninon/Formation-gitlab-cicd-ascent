@@ -1,0 +1,23 @@
+# --- Dépendances ---
+node_modules/
+
+# --- Fichiers d'environnement / secrets locaux ---
+.env
+.env.local
+
+# --- Logs ---
+*.log
+npm-debug.log*
+
+# --- Fichiers système ---
+.DS_Store
+Thumbs.db
+
+# --- Éditeurs ---
+.vscode/
+.idea/
+*.swp
+
+# --- Artefacts de build / couverture de tests ---
+dist/
+coverage/

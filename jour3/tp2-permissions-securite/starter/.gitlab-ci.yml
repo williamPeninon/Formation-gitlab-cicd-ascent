@@ -1,0 +1,45 @@
+stages:
+  - build
+  - test
+  - package
+  - deploy
+
+installer_dependances:
+  stage: build
+  image: node:20-alpine
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+
+executer_tests:
+  stage: test
+  image: node:20-alpine
+  script:
+    - npm test
+
+construire_image:
+  stage: package
+  image: docker:24
+  services:
+    - docker:24-dind
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deployer_staging:
+  stage: deploy
+  image: alpine:3.20
+  environment:
+    name: staging
+    url: https://staging.taskflow-api.exemple.fr
+  script:
+    - echo "Label d'environnement : $DEPLOY_ENV_LABEL"   # affiché en [MASKED] dans les logs
+    - chmod +x scripts/deployer.sh
+    - ./scripts/deployer.sh staging $CI_COMMIT_SHORT_SHA
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'

@@ -1,0 +1,65 @@
+stages:
+  - installation
+  - test
+  - securite
+  - package
+  - deploy
+
+installer_dependances:
+  stage: installation
+  image: node:20-alpine
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+
+executer_tests:
+  stage: test
+  image: node:20-alpine
+  script:
+    - npm test
+
+# Option recommandée si disponible sur l'instance GitLab utilisée :
+# include:
+#   - template: Security/Secret-Detection.gitlab-ci.yml
+
+# Job de substitution pédagogique : simule une détection de secret par
+# expression régulière simple, pour les instances où les templates de
+# sécurité officiels ne sont pas disponibles.
+detection_secrets_grep:
+  stage: securite
+  image: alpine:3.20
+  script:
+    - echo "Recherche de motifs ressemblant à des secrets dans le code source..."
+    - |
+      if grep -R -n -E "FORMATION_FAKE_SECRET_[A-Za-z0-9]{16,}" --exclude-dir=node_modules .; then
+        echo "❌ Secret potentiel détecté ci-dessus — le commit ne doit pas être fusionné."
+        exit 1
+      else
+        echo "✅ Aucun secret détecté."
+      fi
+
+construire_image:
+  stage: package
+  image: docker:24
+  services:
+    - docker:24-dind
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+deployer_staging:
+  stage: deploy
+  image: alpine:3.20
+  environment:
+    name: staging
+    url: https://staging.taskflow-api.exemple.fr
+  script:
+    - chmod +x scripts/deployer.sh
+    - ./scripts/deployer.sh staging $CI_COMMIT_SHORT_SHA
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'

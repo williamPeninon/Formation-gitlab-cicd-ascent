@@ -1,0 +1,19 @@
+stages:
+  - build
+  - test
+
+installer_dependances:
+  stage: build
+  image: node:20-alpine
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+
+executer_tests:
+  stage: test
+  image: node:20-alpine
+  script:
+    - npm test

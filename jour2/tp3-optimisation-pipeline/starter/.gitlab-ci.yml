@@ -1,0 +1,76 @@
+# Pipeline de départ — volontairement inefficace pour ce TP d'optimisation.
+#
+# 6 jobs, 4 stages, exécution strictement séquentielle (stage par stage).
+# Les `sleep` simulent des traitements réels (build, lint, tests, publication)
+# pour rendre la démonstration reproductible sans dépendre de la charge réseau.
+#
+# Objectif du TP : réduire la durée totale du pipeline en identifiant les
+# jobs qui n'ont pas de réelle dépendance entre eux (voir commentaires
+# "INDÉPENDANT" ci-dessous) et en ajoutant les `needs:` appropriés.
+
+stages:
+  - installation
+  - verification
+  - tests
+  - publication
+
+installer_dependances:
+  stage: installation
+  image: node:20-alpine
+  script:
+    - npm ci
+    - sleep 5
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+
+# Ce job lit uniquement le code source pour une analyse de style — il ne
+# dépend en réalité que de la présence du code, pas de node_modules installés
+# par installer_dependances (le linter est simulé ici, pas réellement exécuté
+# depuis node_modules). Il attend pourtant la fin complète du stage
+# "installation" avant de démarrer.
+verification_style_experimental:
+  stage: verification
+  image: node:20-alpine
+  script:
+    - echo "Analyse de style (expérimentale) en cours..."
+    - sleep 15
+    - echo "Analyse terminée."
+
+# INDÉPENDANT : ce job ne lit que package.json et LICENCE, disponibles dès le
+# début du pipeline. Il n'a aucun besoin réel d'attendre le stage
+# "installation".
+verification_licences:
+  stage: verification
+  image: node:20-alpine
+  script:
+    - echo "Vérification des licences des dépendances..."
+    - sleep 10
+    - echo "Aucune licence incompatible détectée."
+
+executer_tests:
+  stage: tests
+  image: node:20-alpine
+  script:
+    - sleep 20
+    - npm test
+
+# INDÉPENDANT : ce job ne vérifie que le contenu du dossier docs/, sans lien
+# avec node_modules ni avec l'exécution des tests applicatifs.
+tests_documentation:
+  stage: tests
+  image: node:20-alpine
+  script:
+    - echo "Vérification de la documentation (docs/)..."
+    - sleep 8
+    - test -f docs/api.md
+    - echo "Documentation présente et valide."
+
+notifier_resultat:
+  stage: publication
+  image: alpine:3.20
+  script:
+    - echo "Publication du rapport de pipeline..."
+    - sleep 5
+    - echo "Pipeline terminé."

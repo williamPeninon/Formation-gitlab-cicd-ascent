@@ -1,0 +1,11 @@
+# Fichier CODEOWNERS — modèle de départ pour le TP 3.2
+#
+# Format : <chemin> <@utilisateur-ou-@groupe ...>
+# Complétez ce fichier pour désigner un propriétaire de .gitlab-ci.yml
+# et un propriétaire du dossier scripts/ (consigne 2 du TP).
+
+# TODO : désigner un propriétaire pour le pipeline CI/CD
+# .gitlab-ci.yml @votre-identifiant-gitlab
+
+# TODO : désigner un propriétaire pour les scripts de déploiement
+# /scripts/ @votre-identifiant-gitlab
