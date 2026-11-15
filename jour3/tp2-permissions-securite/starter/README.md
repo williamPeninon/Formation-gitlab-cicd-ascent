@@ -13,33 +13,36 @@ organisation.
 starter/
   server.js, public/, test/, package.json, package-lock.json
   Dockerfile, scripts/deployer.sh
-  .gitlab-ci.yml       <- pipeline complet du Jour 2 (build/test/package/deploy)
+  .gitlab-ci.yml       <- pipeline du Jour 2 + job detection_secrets_grep à compléter
   CODEOWNERS           <- modèle à compléter (consigne 2)
   INSTRUCTIONS.md       <- chaîne de test fictive pour le job de détection de secret
 ```
 
+> **Offre GitLab requise** : les approbations obligatoires et l'approbation
+> des Code Owners (consignes 1 et 3) nécessitent l'offre **Premium** ou
+> **Ultimate**. Sur GitLab.com, le formateur active un essai gratuit
+> Ultimate (30 jours) sur le groupe de la formation. Sans cela, réalisez
+> les autres règles et observez simplement l'affichage des Code Owners
+> dans la Merge Request.
+
 ## Ce que vous devez faire
 
-1. Dans **Settings > Repository > Protected branches**, protégez `main` :
-   push direct interdit, fusion réservée aux Maintainers, ≥1 approbation
-   requise, pipeline réussi obligatoire.
+1. Protégez `main` :
+   - dans **Settings > Repository > Protected branches** : *Allowed to push
+     and merge* = **No one**, *Allowed to merge* = **Maintainers** ;
+   - dans **Settings > Merge requests** : cochez *Pipelines must succeed*
+     et *All threads must be resolved*, puis créez une règle d'approbation
+     exigeant **1 approbation** (Premium).
 2. Complétez le fichier `CODEOWNERS` (modèle fourni) : un propriétaire pour
    `.gitlab-ci.yml`, un autre pour `/scripts/`.
-3. Dans **Settings > Merge requests**, activez l'exigence d'approbation des
-   Code Owners.
-4. Ajoutez au `.gitlab-ci.yml` l'inclusion du template
-   `Security/Secret-Detection.gitlab-ci.yml` :
-
-```yaml
-include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
-```
-
-   Si cette fonctionnalité n'est pas disponible sur l'instance utilisée,
-   ajoutez à la place un job de substitution qui simule une détection de
-   secret par expression régulière simple (voir un exemple de job
-   `detection_secrets_grep` dans le corrigé, à titre d'inspiration — essayez
-   d'abord de l'écrire vous-même).
+3. Dans **Settings > Repository > Protected branches**, activez l'option
+   **Code owner approval** sur `main` (Premium).
+4. Complétez le job `detection_secrets_grep` fourni dans `.gitlab-ci.yml`
+   (voir les deux `TODO`) : il doit rechercher le format de la chaîne de
+   test décrit dans `INSTRUCTIONS.md` et échouer s'il la trouve. En
+   complément facultatif, vous pouvez décommenter l'inclusion du template
+   officiel `Security/Secret-Detection.gitlab-ci.yml` (lisez d'abord ce
+   qu'en dit `INSTRUCTIONS.md`).
 5. Testez de bout en bout : branche → modification de `.gitlab-ci.yml` → MR →
    vérifiez que l'approbation du Code Owner désigné est exigée.
 6. Committez la chaîne de test fournie dans `INSTRUCTIONS.md` et vérifiez que

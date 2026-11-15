@@ -27,7 +27,7 @@ Voir `.gitlab-ci.yml` : `build → test → package → deploy`.
 ## Vérification attendue
 
 1. Fusion sur `main` → pipeline à 4 stages, tous verts.
-2. Onglet **Deployments > Environments** : environnement `staging` visible,
+2. Onglet **Operate > Environments** : environnement `staging` visible,
    avec l'URL renseignée et l'historique du déploiement.
 3. Un second déploiement (après une modification mineure du code) apparaît
    dans l'historique ; un **rollback** vers le déploiement précédent est

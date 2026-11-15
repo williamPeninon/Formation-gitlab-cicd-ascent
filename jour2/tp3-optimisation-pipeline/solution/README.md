@@ -17,8 +17,8 @@ API REST de gestion de tâches — projet fil rouge de la formation GitLab CI/CD
 3. **`rules: changes: [docs/**/*]`** sur `tests_documentation`, combiné à
    `needs: []` : ce job ne s'exécute que si la documentation a changé, et
    démarre immédiatement quand c'est le cas, sans attendre `installation`.
-4. **`needs:`** explicite sur `executer_tests` (dépend réellement de
-   `node_modules/`) et sur `notifier_resultat` (attend les résultats des
+4. **`needs:`** explicite sur `executer_tests` (dans un vrai projet, il
+   dépend de l'installation des dépendances) et sur `notifier_resultat` (attend les résultats des
    jobs de vérification et de tests avant de publier le rapport).
 
 ## Gain de temps mesuré

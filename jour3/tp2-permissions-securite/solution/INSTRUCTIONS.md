@@ -18,13 +18,17 @@ FORMATION_FAKE_SECRET_7f3a9c2e1b8d4f60
 
 ## Ce qui doit se produire
 
-- Si vous utilisez le template GitLab officiel
-  `Security/Secret-Detection.gitlab-ci.yml` : le rapport de sécurité
-  (onglet **Security & Compliance**) doit signaler la chaîne comme un secret
-  potentiel détecté.
-- Si vous utilisez le job de substitution fourni (voir `.gitlab-ci.yml`,
-  job `detection_secrets_grep`) : le job doit échouer explicitement en
-  affichant la ligne concernée.
+- **Job de substitution** `detection_secrets_grep` (voir `.gitlab-ci.yml`) :
+  le job doit échouer explicitement en affichant la ligne concernée. C'est
+  lui qui sert à valider la consigne 6.
+- **Template GitLab officiel** `Security/Secret-Detection.gitlab-ci.yml`
+  (facultatif) : il ne détectera **pas** cette chaîne, car il ne reconnaît
+  que des formats de secrets réels et connus (jetons GitLab `glpat-…`, clés
+  AWS, clés privées…). Son job `secret_detection` s'exécute sur toutes les
+  offres et produit le rapport `gl-secret-detection-report.json`,
+  téléchargeable dans les artefacts du job. L'affichage des résultats dans
+  la Merge Request et dans **Secure > Vulnerability report** est réservé à
+  l'offre Ultimate.
 
 ## Une fois la vérification faite
 

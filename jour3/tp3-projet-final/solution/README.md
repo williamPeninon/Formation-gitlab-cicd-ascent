@@ -24,9 +24,10 @@ Le pipeline `.gitlab-ci.yml` comporte 5 stages exécutés à chaque push :
 installation → test → securite → package → deploy
 ```
 
-- **`installation`** : `installer_dependances` installe les dépendances via
-  `npm ci` et exporte `node_modules/` en artifact.
-- **`test`** : `executer_tests` exécute la suite `node --test`.
+- **`installation`** : `installer_dependances` vérifie l'installation des
+  dépendances via `npm ci` (le projet n'en a aucune).
+- **`test`** : `executer_tests` exécute la suite `node --test` et publie le
+  rapport JUnit `rapport-tests.xml` (onglet Tests du pipeline).
 - **`securite`** : `detection_secrets_grep` recherche tout motif ressemblant
   à un secret committé par erreur, et fait échouer le pipeline le cas
   échéant.

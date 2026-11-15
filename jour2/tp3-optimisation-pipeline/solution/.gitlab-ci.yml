@@ -10,13 +10,11 @@ stages:
 installer_dependances:
   stage: installation
   image: node:20-alpine
+  # taskflow-api n'a aucune dépendance npm : npm ci vérifie la cohérence du
+  # package-lock.json mais ne crée pas de node_modules/ (rien à transmettre).
   script:
     - npm ci
     - sleep 5
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
 
 # Optimisation 1 : ce job ne dépend en réalité que du code source, pas de
 # node_modules — needs: le détache du stage "installation" et lui permet de
@@ -51,7 +49,15 @@ executer_tests:
     - installer_dependances
   script:
     - sleep 20
-    - npm test
+    # Deux rapports : lisible dans le journal (spec) et JUnit pour GitLab
+    - npm test -- --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=rapport-tests.xml
+  artifacts:
+    when: always              # conserver le rapport même si un test échoue
+    paths:
+      - rapport-tests.xml
+    reports:
+      junit: rapport-tests.xml  # onglet Tests du pipeline + résumé dans la MR
+    expire_in: 1 week
 
 # Optimisation 3 : ce job ne s'exécute que si un fichier du dossier docs/ a
 # été modifié dans le commit/la MR — inutile de le lancer systématiquement.

@@ -7,18 +7,24 @@ stages:
 installer_dependances:
   stage: build
   image: node:20-alpine
+  # taskflow-api n'a aucune dépendance npm : npm ci vérifie la cohérence du
+  # package-lock.json mais ne crée pas de node_modules/ (rien à transmettre).
   script:
     - npm ci
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
 
 executer_tests:
   stage: test
   image: node:20-alpine
   script:
-    - npm test
+    # Deux rapports : lisible dans le journal (spec) et JUnit pour GitLab
+    - npm test -- --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=rapport-tests.xml
+  artifacts:
+    when: always              # conserver le rapport même si un test échoue
+    paths:
+      - rapport-tests.xml
+    reports:
+      junit: rapport-tests.xml  # onglet Tests du pipeline + résumé dans la MR
+    expire_in: 1 week
 
 construire_image:
   stage: package
@@ -26,6 +32,7 @@ construire_image:
   services:
     - docker:24-dind
   script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   rules:
