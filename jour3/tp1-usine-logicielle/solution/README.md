@@ -65,7 +65,7 @@ entreprise/
 **Exemple d'héritage au niveau du groupe** : les variables CI/CD sensibles
 (jetons du registre de conteneurs, identifiants du fournisseur cloud) sont
 définies une seule fois au niveau du groupe `plateforme-api` (Settings >
-CI/CD > Variables, avec l'option **Protected**), et héritées automatiquement
+Settings > CI/CD > Variables, avec l'option **Protected**), et héritées automatiquement
 par tous les projets des sous-groupes — évitant toute duplication ou
 divergence entre projets.
 

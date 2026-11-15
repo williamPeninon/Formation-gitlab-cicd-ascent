@@ -3,8 +3,8 @@
 # Format : <chemin> <@utilisateur-ou-@groupe ...>
 # GitLab exige l'approbation du/des propriétaire(s) désigné(s) avant de
 # permettre la fusion d'une Merge Request modifiant le chemin concerné
-# (une fois l'option "Require approval from Code Owners" activée dans
-# Settings > Merge requests).
+# (une fois l'option "Code owner approval" activée sur la branche protégée,
+# dans Settings > Repository > Protected branches — offre Premium ou Ultimate).
 
 # Le pipeline CI/CD est un actif sensible : toute modification doit être
 # revue par la personne responsable de la plateforme.

@@ -3,7 +3,7 @@
 /**
  * taskflow-api — API REST minimaliste de gestion de tâches.
  *
- * Application "fil rouge" de la formation GitLab CI/CD (Ascent / ANFSI).
+ * Application "fil rouge" de la formation GitLab CI/CD.
  * Écrite en Node.js natif pur : aucun framework, aucune dépendance npm,
  * aucune base de données externe (persistance en mémoire, réinitialisée
  * à chaque redémarrage du serveur).

@@ -1,24 +1,51 @@
 stages:
   - build
   - test
+  - securite
   - package
   - deploy
 
 installer_dependances:
   stage: build
   image: node:20-alpine
+  # taskflow-api n'a aucune dépendance npm : npm ci vérifie la cohérence du
+  # package-lock.json mais ne crée pas de node_modules/ (rien à transmettre).
   script:
     - npm ci
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
 
 executer_tests:
   stage: test
   image: node:20-alpine
   script:
-    - npm test
+    # Deux rapports : lisible dans le journal (spec) et JUnit pour GitLab
+    - npm test -- --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=rapport-tests.xml
+  artifacts:
+    when: always              # conserver le rapport même si un test échoue
+    paths:
+      - rapport-tests.xml
+    reports:
+      junit: rapport-tests.xml  # onglet Tests du pipeline + résumé dans la MR
+    expire_in: 1 week
+
+# Option : scanner officiel GitLab (disponible sur toutes les offres).
+# Attention : il ne reconnaît que des formats de secrets connus (jetons
+# GitLab, clés AWS...), pas la chaîne fictive de INSTRUCTIONS.md.
+# include:
+#   - template: Security/Secret-Detection.gitlab-ci.yml
+
+# Job de substitution pédagogique (consigne 4) : à compléter.
+detection_secrets_grep:
+  stage: securite
+  image: alpine:3.20
+  script:
+    - echo "Recherche de motifs ressemblant à des secrets dans le code source..."
+    # TODO 1 : remplacer MOTIF_A_DEFINIR par une expression régulière (grep -E)
+    #          qui reconnaît le format des secrets de test décrit dans INSTRUCTIONS.md
+    # TODO 2 : faire échouer le job (exit 1) quand grep trouve une correspondance,
+    #          et afficher un message clair dans les deux cas
+    # La recherche parcourt le code (hors node_modules/, .git/ et fichiers .md :
+    # INSTRUCTIONS.md contient la chaîne de test et ne doit pas être signalé).
+    - find . -path ./node_modules -prune -o -path ./.git -prune -o -type f ! -name "*.md" -print | xargs grep -n -H -E "MOTIF_A_DEFINIR" || true
 
 construire_image:
   stage: package
@@ -26,6 +53,7 @@ construire_image:
   services:
     - docker:24-dind
   script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   rules:

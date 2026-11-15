@@ -6,20 +6,21 @@ API REST de gestion de tâches — projet fil rouge de la formation GitLab CI/CD
 
 ## Protection de la branche `main`
 
-Configuration attendue dans **Settings > Repository > Protected branches** :
-
-| Règle | Valeur |
-|---|---|
-| Autoriser à pousser | Personne (No one) |
-| Autoriser à fusionner | Maintainers |
-| Approbations requises | 1 minimum |
-| Pipeline réussi obligatoire | Oui |
+| Règle | Où la configurer | Offre |
+|---|---|---|
+| Autoriser à pousser : Personne (No one) | Settings > Repository > Protected branches | Toutes |
+| Autoriser à fusionner : Maintainers | Settings > Repository > Protected branches | Toutes |
+| Approbation des Code Owners (*Code owner approval*) | Settings > Repository > Protected branches | Premium |
+| Pipeline réussi obligatoire (*Pipelines must succeed*) | Settings > Merge requests | Toutes |
+| Discussions résolues obligatoires | Settings > Merge requests | Toutes |
+| 1 approbation minimum (règle d'approbation) | Settings > Merge requests | Premium |
 
 ## `CODEOWNERS`
 
 Voir le fichier `CODEOWNERS` : propriétaires désignés pour `.gitlab-ci.yml`,
-`/scripts/` et `/Dockerfile`. Combiné à l'option **"Require approval from
-Code Owners"** (Settings > Merge requests), toute Merge Request modifiant
+`/scripts/` et `/Dockerfile`. Combiné à l'option **Code owner approval**
+de la branche protégée `main` (Settings > Repository > Protected branches,
+offre Premium), toute Merge Request modifiant
 l'un de ces chemins exige l'approbation explicite du Code Owner désigné avant
 que le bouton de fusion ne s'active.
 
@@ -28,11 +29,13 @@ que le bouton de fusion ne s'active.
 Le pipeline inclut un job `detection_secrets_grep` (stage `securite`) qui
 recherche le motif `FORMATION_FAKE_SECRET_[A-Za-z0-9]{16,}` dans le code
 source et fait échouer le pipeline s'il le trouve — voir `INSTRUCTIONS.md`
-pour la chaîne de test fictive utilisée pour valider ce mécanisme. Sur une
-instance GitLab où les templates de sécurité officiels sont disponibles, la
-ligne commentée `include: - template:
-Security/Secret-Detection.gitlab-ci.yml` peut être décommentée à la place
-pour bénéficier d'une détection plus complète.
+pour la chaîne de test fictive utilisée pour valider ce mécanisme.
+
+Le template officiel `Security/Secret-Detection.gitlab-ci.yml` (en
+commentaire dans le pipeline) peut être activé **en complément** : il
+couvre les vrais formats de secrets (jetons GitLab, clés AWS, clés
+privées…) mais ne reconnaît pas la chaîne fictive de la formation. Il ne
+remplace donc pas le job de substitution pour la consigne 6.
 
 ## Vérification de bout en bout
 

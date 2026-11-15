@@ -8,33 +8,43 @@ stages:
 installer_dependances:
   stage: installation
   image: node:20-alpine
+  # taskflow-api n'a aucune dépendance npm : npm ci vérifie la cohérence du
+  # package-lock.json mais ne crée pas de node_modules/ (rien à transmettre).
   script:
     - npm ci
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
 
 executer_tests:
   stage: test
   image: node:20-alpine
   script:
-    - npm test
+    # Deux rapports : lisible dans le journal (spec) et JUnit pour GitLab
+    - npm test -- --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=rapport-tests.xml
+  artifacts:
+    when: always              # conserver le rapport même si un test échoue
+    paths:
+      - rapport-tests.xml
+    reports:
+      junit: rapport-tests.xml  # onglet Tests du pipeline + résumé dans la MR
+    expire_in: 1 week
 
-# Option recommandée si disponible sur l'instance GitLab utilisée :
+# Option : scanner officiel GitLab (disponible sur toutes les offres).
+# Il ne reconnaît que des formats de secrets connus (jetons GitLab, clés
+# AWS...), pas la chaîne fictive de INSTRUCTIONS.md : à activer en complément.
 # include:
 #   - template: Security/Secret-Detection.gitlab-ci.yml
 
-# Job de substitution pédagogique : simule une détection de secret par
-# expression régulière simple, pour les instances où les templates de
-# sécurité officiels ne sont pas disponibles.
+# Job de substitution pédagogique : détection de la chaîne de test de la
+# formation par expression régulière simple (consigne 6). On parcourt les
+# fichiers avec find (le grep BusyBox d'alpine ne connaît pas --exclude-dir)
+# en excluant node_modules/, .git/ et les .md (INSTRUCTIONS.md contient la
+# chaîne de test : sans cette exclusion, le job échouerait à chaque pipeline).
 detection_secrets_grep:
   stage: securite
   image: alpine:3.20
   script:
     - echo "Recherche de motifs ressemblant à des secrets dans le code source..."
     - |
-      if grep -R -n -E "FORMATION_FAKE_SECRET_[A-Za-z0-9]{16,}" --exclude-dir=node_modules .; then
+      if find . -path ./node_modules -prune -o -path ./.git -prune -o -type f ! -name "*.md" -print | xargs grep -n -H -E "FORMATION_FAKE_SECRET_[A-Za-z0-9]{16,}"; then
         echo "❌ Secret potentiel détecté ci-dessus — le commit ne doit pas être fusionné."
         exit 1
       else
@@ -47,6 +57,7 @@ construire_image:
   services:
     - docker:24-dind
   script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   rules:

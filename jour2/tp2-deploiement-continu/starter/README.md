@@ -33,6 +33,7 @@ construire_image:
   services:
     - docker:24-dind
   script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
     - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
 ```
@@ -48,7 +49,7 @@ construire_image:
    - restreint via `rules:` à la branche `main` uniquement.
 5. Poussez, ouvrez une MR, fusionnez sur `main`, vérifiez le déclenchement
    automatique du déploiement.
-6. Consultez **Deployments > Environments**, faites un second déploiement
+6. Consultez **Operate > Environments**, faites un second déploiement
    puis testez le **rollback** vers le déploiement précédent.
 
 ## Tester `deployer.sh` en local

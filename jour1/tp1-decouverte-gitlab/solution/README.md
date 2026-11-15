@@ -30,19 +30,21 @@ solution/
       « API REST de gestion de tâches — projet fil rouge de la formation
       GitLab CI/CD »
 - [x] Section "Objectif du projet" ajoutée au `README.md` via un commit web,
-      visible dans **Repository > Commits**
+      visible dans **Code > Commits**
 - [x] Chaque entrée du menu latéral explorée et décrite en une phrase :
 
 | Menu | Rôle |
 |---|---|
-| Overview | Vue d'ensemble du projet (README, activité récente, statistiques) |
-| Repository | Code source, branches, tags, historique des commits |
-| Issues | Suivi des tâches, bugs et demandes à traiter |
-| Merge Requests | Propositions de fusion de code, revues et discussions |
-| CI/CD | Pipelines, jobs, variables et exécution des tests/déploiements |
-| Deployments | Environnements, historique des déploiements, rollback |
-| Packages and registries | Registre de conteneurs et de paquets du projet |
-| Wiki | Documentation libre du projet, éditable en Markdown |
+| Manage | Membres du projet, activité récente |
+| Plan | Issues, boards, jalons, wiki |
+| Code | Merge requests, fichiers du dépôt, branches, tags, historique des commits |
+| Build | Pipelines, jobs, éditeur de pipeline (Jour 2) |
+| Secure | Rapports des scans de sécurité (Jour 3) |
+| Deploy | Releases, registre de conteneurs et de paquets du projet |
+| Operate | Environnements, historique des déploiements, rollback |
+| Monitor | Incidents et suivi des erreurs |
+| Analyze | Statistiques du dépôt, analyses CI/CD |
+| Settings | Paramètres : visibilité, CI/CD, branches protégées, membres... |
 
 ## Lancer l'application
 
