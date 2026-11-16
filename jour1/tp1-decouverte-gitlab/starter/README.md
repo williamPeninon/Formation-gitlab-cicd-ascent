@@ -2,7 +2,7 @@
 
 ## Objectif du projet
 
-*(à compléter par vous — voir consigne 6 du TP)*
+*(à compléter par vous — voir consigne 7 du TP)*
 
 ## Contenu de ce dossier
 
@@ -46,9 +46,9 @@ Ce TP ne demande **aucune modification de code**. Il consiste à :
 1. Créer votre compte / vous connecter sur GitLab.
 2. Créer le groupe `formation-gitlab-cicd` puis le projet `taskflow-api` à
    l'intérieur.
-3. **Pousser le contenu de ce dossier** comme premier commit du projet
-   (ou recréer l'arborescence en clonant le dépôt vide puis en y copiant ces
-   fichiers).
+3. **Importer le contenu de ce dossier** dans le projet (consigne 5) :
+   cloner le projet, y copier ces fichiers (ce `README.md` remplace celui
+   généré par GitLab), committer et pousser.
 4. Suivre les consignes détaillées du support de cours (Module 1.1 — TP 1.1).
 
 Consultez le support apprenant (PDF) ou demandez au formateur si vous avez un

@@ -35,15 +35,17 @@ juste au-dessus dans le fichier.
 
 ## Étapes GitLab attendues (rappel des consignes du TP)
 
-1. Créez l'issue « Ajouter le marquage d'une tâche comme terminée » (label
+1. Invitez votre binôme dans votre projet (**Manage > Members**, rôle
+   **Developer**) et acceptez son invitation.
+2. Créez l'issue « Ajouter le marquage d'une tâche comme terminée » (label
    `feature`, vous-même en assignee).
-2. Depuis l'issue, générez la branche et la Merge Request liées (bouton
+3. Depuis l'issue, générez la branche et la Merge Request liées (bouton
    "Create merge request").
-3. Récupérez la branche localement, complétez `server.js` comme décrit
+4. Récupérez la branche localement, complétez `server.js` comme décrit
    ci-dessus.
-4. Committez, poussez, complétez la description de la MR (`Closes #<numéro>`),
+5. Committez, poussez, complétez la description de la MR (`Closes #<numéro>`),
    retirez le statut Draft.
-5. Faites relire par votre binôme (discussion + résolution + approbation),
+6. Faites relire par votre binôme (discussion + résolution + approbation),
    puis fusionnez en supprimant la branche source.
 
 ## Vérifier votre implémentation
