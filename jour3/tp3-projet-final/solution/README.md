@@ -21,10 +21,10 @@ node server.js
 Le pipeline `.gitlab-ci.yml` comporte 5 stages exécutés à chaque push :
 
 ```
-installation → test → securite → package → deploy
+build → test → securite → package → deploy
 ```
 
-- **`installation`** : `installer_dependances` vérifie l'installation des
+- **`build`** : `installer_dependances` vérifie l'installation des
   dépendances via `npm ci` (le projet n'en a aucune).
 - **`test`** : `executer_tests` exécute la suite `node --test` et publie le
   rapport JUnit `rapport-tests.xml` (onglet Tests du pipeline).

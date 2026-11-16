@@ -8,7 +8,7 @@ trois journées de formation, jusqu'à un pipeline de production sécurisé.
 
 > Cette section a été ajoutée via un commit réalisé **directement depuis
 > l'interface web de GitLab** (bouton d'édition du fichier, puis "Commit
-> changes" sur la branche `main`), comme demandé à la consigne 6 du TP.
+> changes" sur la branche `main`), comme demandé à la consigne 7 du TP.
 
 ## Contenu de ce dossier
 

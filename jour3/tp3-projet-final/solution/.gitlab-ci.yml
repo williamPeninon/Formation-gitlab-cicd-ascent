@@ -1,12 +1,12 @@
 stages:
-  - installation
+  - build
   - test
   - securite
   - package
   - deploy
 
 installer_dependances:
-  stage: installation
+  stage: build
   image: node:20-alpine
   # taskflow-api n'a aucune dépendance npm : npm ci vérifie la cohérence du
   # package-lock.json mais ne crée pas de node_modules/ (rien à transmettre).
@@ -29,15 +29,16 @@ executer_tests:
 
 # Option : scanner officiel GitLab (disponible sur toutes les offres).
 # Il ne reconnaît que des formats de secrets connus (jetons GitLab, clés
-# AWS...), pas la chaîne fictive de INSTRUCTIONS.md : à activer en complément.
+# AWS...), pas la chaîne fictive du TP 3.2 : à activer en complément.
 # include:
 #   - template: Security/Secret-Detection.gitlab-ci.yml
 
 # Job de substitution pédagogique : détection de la chaîne de test de la
-# formation par expression régulière simple (consigne 6). On parcourt les
+# formation par expression régulière simple (consigne 6 du TP 3.2). On parcourt les
 # fichiers avec find (le grep BusyBox d'alpine ne connaît pas --exclude-dir)
-# en excluant node_modules/, .git/ et les .md (INSTRUCTIONS.md contient la
-# chaîne de test : sans cette exclusion, le job échouerait à chaque pipeline).
+# en excluant node_modules/, .git/ et les .md (la documentation, comme le
+# INSTRUCTIONS.md du TP 3.2, peut citer la chaîne de test : sans cette
+# exclusion, le job échouerait à chaque pipeline).
 detection_secrets_grep:
   stage: securite
   image: alpine:3.20

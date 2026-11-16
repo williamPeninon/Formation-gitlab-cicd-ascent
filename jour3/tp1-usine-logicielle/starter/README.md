@@ -21,7 +21,8 @@ de référence commune.
 5. Identifiez au moins une intégration externe pertinente.
 6. Esquissez une structure de groupes/sous-groupes GitLab avec un exemple de
    configuration héritée au niveau du groupe.
-7. Rédigez le tout dans un `README.md` déposé dans `solution/`, comme s'il
+7. Rédigez le tout dans un fichier `ARCHITECTURE.md` à la racine de votre
+   projet `taskflow-api` (ou dans une page du Wiki du projet), comme s'il
    devait être publié dans un Wiki GitLab.
 
 Un schéma simple (rectangles en texte, ou dessiné à la main puis pris en
@@ -29,7 +30,7 @@ photo) suffit largement — la clarté prime sur l'esthétique.
 
 ## Livrable attendu
 
-Un fichier `solution/README.md` répondant à l'ensemble des points ci-dessus,
+Un fichier `ARCHITECTURE.md` (ou une page Wiki) répondant à l'ensemble des points ci-dessus,
 présentable à l'oral en 3 minutes maximum. Un exemple corrigé (sur le
 scénario B) est fourni dans `solution/README.md` de ce dépôt pédagogique à
 titre d'illustration — comparez-le à votre propre production après
